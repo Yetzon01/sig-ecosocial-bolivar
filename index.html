@@ -93,38 +93,51 @@
         #titulo-principal { font-size: 22px; font-weight: 800; color: #FFFFFF; text-transform: uppercase; margin-bottom: 5px; }
 
         #contenedor { display: flex; flex-grow: 1; overflow: hidden; }
-        #sidebar { width: 440px; background: var(--negro); color: white; padding: 15px; overflow-y: auto; border-right: 2px solid #333; }
         
-        /* PANELES ADMIN */
+        /* SIDEBAR Y PANELES */
+        #sidebar { width: 440px; background: var(--negro); color: white; padding: 15px; overflow-y: auto; border-right: 2px solid #333; }
         #panel-admin-comunas { display: none; width: 440px; background: var(--negro); color: white; padding: 15px; overflow-y: auto; border-right: 2px solid #333; }
-        .item-comuna-admin { background: #222; border: 1px solid #444; border-radius: 8px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .badge-mapas { background: var(--v-lim); color: var(--v-osc); padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 900; }
-        .btn-volver-admin { background: #444; color: #fff; border: none; padding: 10px; border-radius: 5px; font-size: 10px; cursor: pointer; margin-bottom: 10px; width: 100%; font-weight: bold; }
-
+        
         h4 { color: var(--v-lim); font-size: 11px; text-transform: uppercase; margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 4px; letter-spacing: 1px; }
         .grid-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .sidebar-form-group { margin-bottom: 8px; }
         .sidebar-label { display: block; font-size: 9px; color: #888; margin-bottom: 2px; text-transform: uppercase; }
         .sidebar-input, .sidebar-select { width: 100%; background: #222; border: 1px solid #444; color: white; padding: 6px 8px; font-size: 11px; border-radius: 4px; outline: none; }
 
+        .fila-historia { border-bottom: 1px solid #333; display: flex; align-items: center; gap: 5px; padding: 4px 0; }
+        .col-anio { width: 60px; background: #111 !important; border-radius: 4px; }
+        .btn-del-hist { background: transparent; color: #ff4444; border: none; cursor: pointer; font-size: 14px; }
+        .btn-add-hist { background: var(--v-osc); color: var(--v-lim); border: 1px solid var(--v-lim); border-radius: 4px; padding: 4px; cursor: pointer; font-size: 10px; margin-top: 5px; width: 100%; }
+
         .btn-mapa { width: 100%; padding: 8px; margin: 2px 0; background: #252827; color: white; border: 1px solid #444; border-radius: 6px; cursor: pointer; text-align: left; font-size: 10.5px; display: flex; align-items: center; justify-content: space-between; }
         .btn-mapa.activo { background: var(--v-osc) !important; border-color: var(--v-lim); }
         .count-badge { background: #333; color: var(--v-lim); padding: 2px 6px; border-radius: 10px; font-weight: bold; font-size: 10px; }
 
+        /* ICONOS MAPA */
+        .map-icon-container { background: white !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; border: none !important; box-shadow: 0 2px 4px rgba(0,0,0,0.4); width: 24px; height: 24px; font-size: 14px; position: relative; }
+        .cruz-roja { width: 16px; height: 16px; position: relative; }
+        .cruz-roja::before, .cruz-roja::after { content: ''; position: absolute; background: #ff0000; border-radius: 2px; }
+        .cruz-roja::before { width: 100%; height: 4px; top: 6px; left: 0; }
+        .cruz-roja::after { width: 4px; height: 100%; top: 0; left: 6px; }
+
         #map-container { flex-grow: 1; position: relative; background: #1a1a1a; }
         #map { width: 100%; height: 100%; }
+        
+        .controles-mapa-horiz { position: absolute; top: 15px; left: 60px; z-index: 2000; display: flex; gap: 8px; }
+        .btn-float { width: 42px; height: 42px; background: white; border: none; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .btn-float.activo-float { background: var(--v-lim); border: 2px solid var(--v-osc); }
+        #btnFinalizar { display: none; background: #4CAF50; color: white; }
 
-        /* TABLA VOCEROS */
-        #panel-voceros-lista {
-            position: fixed; bottom: 20px; right: 20px; width: 80%; max-height: 400px;
-            background: var(--negro-card); border: 2px solid var(--v-lim); z-index: 4000;
-            border-radius: 15px; display: none; flex-direction: column; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
+        .zoom-preciso-panel { position: absolute; top: 15px; right: 15px; z-index: 2000; background: white; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 2px solid var(--v-osc); }
+        .zoom-preciso-panel input[type="range"] { cursor: pointer; width: 120px; accent-color: var(--v-osc); }
+
+        /* LISTADOS ADMIN */
+        .item-comuna-admin { background: #222; border: 1px solid #444; border-radius: 8px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        #panel-voceros-lista { position: fixed; bottom: 20px; right: 20px; width: 80%; max-height: 400px; background: var(--negro-card); border: 2px solid var(--v-lim); z-index: 4000; border-radius: 15px; display: none; flex-direction: column; overflow: hidden; }
         .header-panel-v { background: var(--v-osc); padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .table-container { overflow-y: auto; flex-grow: 1; padding: 10px; }
+        .table-container { overflow-y: auto; padding: 10px; }
         table { width: 100%; border-collapse: collapse; color: white; font-size: 12px; }
-        th { background: #333; color: var(--v-lim); text-align: left; padding: 8px; border-bottom: 2px solid var(--v-lim); }
+        th { background: #333; color: var(--v-lim); padding: 8px; border-bottom: 2px solid var(--v-lim); text-align: left; }
         td { padding: 8px; border-bottom: 1px solid #444; }
     </style>
 </head>
@@ -142,7 +155,6 @@
             <div class="logo-wrapper"><img src="logo1.png.png"></div>
             <div class="logo-wrapper"><img src="logo2.png.png"></div>
         </div>
-        
         <h2>SISTEMA DE GESTIÓN</h2>
         <p class="subtitle">Municipio Simón Bolívar</p>
 
@@ -159,7 +171,6 @@
                     <button type="button" class="btn-verificar" onclick="verificarCorreo()">VERIFICAR</button>
                 </div>
             </div>
-
             <div id="campos-dinamicos-registro">
                 <div class="form-row">
                     <div class="form-group"><label>Nombres</label><input type="text" id="regNom" required></div>
@@ -176,22 +187,20 @@
                 <div class="form-group">
                     <label>Vocería a la que pertenece</label>
                     <select id="selectVoceria" onchange="controlarOtro(this.value)">
-                        <option value="" disabled selected>Seleccione una opción</option>
                         <option value="Vocero de Ecosocialismo">Vocero de Ecosocialismo</option>
                         <option value="otro">Otro (Especificar)</option>
                     </select>
                 </div>
                 <div id="segmento-otro">
-                    <label>Especifique su Vocería</label>
                     <input type="text" id="inputOtro" placeholder="¿Cuál es su vocería?">
                 </div>
-                <button type="submit" id="btnIngresar" class="btn-acceder">INGRESAR Y GUARDAR REGISTRO</button>
+                <button type="submit" class="btn-acceder">INGRESAR Y GUARDAR REGISTRO</button>
             </div>
         </form>
 
         <form id="form-admin-acceso" class="form-admin" onsubmit="event.preventDefault(); validarAdmin();">
-            <div class="form-group"><label>Correo Administrativo</label><input type="email" id="adminEmail" placeholder="admin@bolivar.gob.ve" required></div>
-            <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="••••••••" required></div>
+            <div class="form-group"><label>Correo Administrativo</label><input type="email" id="adminEmail" required></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" required></div>
             <button type="submit" class="btn-acceder">INICIAR SESIÓN ADMIN</button>
         </form>
     </div>
@@ -208,31 +217,59 @@
     <div id="contenedor">
         <div id="panel-admin-comunas">
             <h4 style="color:var(--v-lim)">🛡️ PANEL DE CONTROL ADMINISTRATIVO</h4>
-            <button class="btn-acceder" style="margin-bottom: 15px; padding: 10px; font-size: 11px;" onclick="togglePanelVoceros()">📋 VER LISTADO DE VOCEROS REGISTRADOS</button>
+            <button class="btn-acceder" style="margin-bottom: 15px; padding: 10px; font-size: 11px;" onclick="togglePanelVoceros()">📋 LISTADO DE VOCEROS</button>
             <div id="lista-comunas-admin"></div>
         </div>
 
         <div id="sidebar">
-            <button id="btnVolverAdmin" class="btn-volver-admin" style="display:none" onclick="volverAPanelAdmin()">⬅️ VOLVER AL PANEL ADMIN</button>
+            <button id="btnVolverAdmin" class="btn-volver-admin" style="display:none" onclick="mostrarLeyendaAdmin()">⬅️ VOLVER AL PANEL ADMIN</button>
             <h4>📍 Información Territorial</h4>
             <div class="grid-datos">
+                <div class="sidebar-form-group"><label class="sidebar-label">Estado</label><input type="text" class="sidebar-input" value="ANZOÁTEGUI" readonly></div>
+                <div class="sidebar-form-group"><label class="sidebar-label">Municipio</label><input type="text" class="sidebar-input" value="SIMÓN BOLÍVAR" readonly></div>
                 <div class="sidebar-form-group" style="grid-column: span 2;">
-                    <label class="sidebar-label">Comuna Seleccionada</label>
-                    <input type="text" id="comunaActiva" class="sidebar-input" readonly>
+                    <label class="sidebar-label">Comuna</label>
+                    <select id="selectComuna" class="sidebar-select">
+                        <option value="">Seleccione...</option>
+                        </select>
                 </div>
-                <div class="sidebar-form-group"><label class="sidebar-label">Cant. Calles</label><input type="number" class="sidebar-input" value="0"></div>
-                <div class="sidebar-form-group"><label class="sidebar-label">Asfaltadas</label><input type="number" class="sidebar-input" value="0"></div>
             </div>
-            
-            <h4>⚠️ Factores de Riesgo</h4>
-            <button class="btn-mapa" onclick="activarEmoji('🌊','inund')"><div>🌊 Zona Inundable</div> <span class="count-badge" id="count-inund">0</span></button>
-            <button class="btn-mapa" onclick="activarEmoji('🏚️','casa_r')"><div>🏚️ Vivienda en Riesgo</div> <span class="count-badge" id="count-casa_r">0</span></button>
-            <button class="btn-mapa" onclick="activarEmoji('🗑️','basura')"><div>🗑️ Foco Crítico Basura</div> <span class="count-badge" id="count-basura">0</span></button>
-            
-            <button class="btn-acceder" style="margin-top:20px;" onclick="guardarMapaActual()">💾 GUARDAR MAPA EN MEMORIA</button>
+
+            <h4>⏳ Antecedentes Históricos</h4>
+            <div id="lista-antecedentes"></div>
+            <button class="btn-add-hist" onclick="agregarFilaHistoria()">+ AGREGAR ANTECEDENTE</button>
+
+            <h4>🚩 Vulnerabilidad y Riesgos</h4>
+            <button class="btn-mapa" onclick="cambiarEmoji('🤰',this,'vuln_emb')"><div>🤰 Mujer Embarazada</div> <span class="count-badge" id="count-vuln_emb">0</span></button>
+            <button class="btn-mapa" onclick="cambiarEmoji('♿',this,'vuln_disc')"><div>♿ Discapacidad</div> <span class="count-badge" id="count-vuln_disc">0</span></button>
+            <button class="btn-mapa" onclick="cambiarEmoji('🌊',this,'inund')"><div>🌊 Zona Inundable</div> <span class="count-badge" id="count-inund">0</span></button>
+            <button class="btn-mapa" onclick="cambiarEmoji('🏚️',this,'casa_r')"><div>🏚️ Vivienda Riesgo</div> <span class="count-badge" id="count-casa_r">0</span></button>
+            <button class="btn-mapa" onclick="cambiarEmoji('🗑️',this,'basura')"><div>🗑️ Basura</div> <span class="count-badge" id="count-basura">0</span></button>
+            <h4>📐 Herramientas de Dibujo</h4>
+            <div style="background: #111; padding: 10px; border-radius: 8px;">
+                <button class="btn-mapa" onclick="iniciarTrazado('pol')">✍️ TRAZAR POLÍGONO</button>
+                <button class="btn-mapa" onclick="iniciarTrazado('line')">〰️ TRAZAR LÍNEA</button>
+                <div style="margin-top:8px; display:flex; justify-content:space-between;">
+                    <input type="color" id="colorPol" value="#B4D445">
+                    <label style="font-size:9px;">RELLENO <input type="checkbox" id="checkRelleno" checked></label>
+                </div>
+            </div>
+
+            <button class="btn-mapa" style="border: 2px solid var(--v-lim); color:var(--v-lim); margin-top:15px;" onclick="guardarMapa()">💾 GUARDAR MAPA</button>
+            <button class="btn-mapa" style="background:var(--v-lim); color:var(--v-osc);" onclick="window.print()">🖨️ EXPORTAR PDF</button>
         </div>
 
         <div id="map-container">
+            <div class="zoom-preciso-panel">
+                <span>ZOOM</span>
+                <input type="range" id="zoomSlider" min="1" max="20" step="0.1" value="18" oninput="map.setZoom(this.value)">
+            </div>
+            <div class="controles-mapa-horiz">
+                <button id="floatMano" class="btn-float activo-float" onclick="activarMano()">🖐️</button>
+                <button class="btn-float" onclick="irAMiUbicacion()">🎯</button>
+                <button id="btnFinalizar" class="btn-float" onclick="finalizarTrazado()">✅</button>
+                <button class="btn-float" onclick="deshacer()">↩️</button>
+            </div>
             <div id="map"></div>
         </div>
     </div>
@@ -241,85 +278,67 @@
 <div id="panel-voceros-lista">
     <div class="header-panel-v">
         <h4 style="margin:0; color:white;">👥 VOCEROS REGISTRADOS</h4>
-        <button onclick="togglePanelVoceros()" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer;">X</button>
+        <button onclick="togglePanelVoceros()" style="background:red; color:white; border:none; padding:5px;">[X]</button>
     </div>
     <div class="table-container">
         <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Correo</th><th>Comuna</th><th>Vocería</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Correo</th><th>Comuna</th></tr></thead>
             <tbody id="tbody-voceros"></tbody>
         </table>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://npmcdn.com/leaflet-editable@1.2.0/src/Leaflet.Editable.js"></script>
+
 <script>
-    // --- MEMORIA DEL SISTEMA ---
+    /* --- DATA Y PERSISTENCIA --- */
     let dbVoceros = JSON.parse(localStorage.getItem('SIG_Voceros')) || [];
     let dbMapasCount = JSON.parse(localStorage.getItem('SIG_Mapas_Count')) || {};
-    let rolUsuario = "usuario";
-    var map;
+    let rolActual = "usuario";
+    var map, emojiActual = null, modoNavegar = true, trazandoAhora = null;
+    var stackElementos = [], stackRedo = [];
 
-    const listaComunas = [
-        "4F-92 COMANDANTE ETERNO HUGO RAFAEL CHAVEZ", "AGROINDUSTRIAL CACIQUE GUAICAIPURO", "AGROECOLOGICA Y TURISTICA BERGANTIN",
-        "AGROTURISTICA Y SOCIALISTA LA FE DE TODOS", "ANTONIO RICAURTE 4F", "DESPERTAR CUMANAGOTO", "DONATO CONSTANTINO MARADEI",
-        "ECO AMBIENTAL EL GRAN EL SAMAN DORADO", "EZEQUIEL ZAMORA", "FRANCISCO DE MIRANDA DE CRUZ VERDE", "GOLPE DE TIMON",
-        "GRUTA SAN FELIPE NERI", "GUERREROS DE BOYACA", "HUGO CHAVEZ FRIAS 2013", "INDIGENA CUMANAGOTO SAN BERNARDINO",
-        "INDIGENA GRAN CACIQUE CAYAURIMA", "INDIOS CUMANAGOTOS", "JOSE ANTONIO ANZOATEGUI 14-15", "JUANA PETRONILA HERNANDEZ",
-        "LAS ORQUIDEAS DE CHAVEZ", "LINA RON", "LOS ESFUERZOS EN VICTORIA", "LOS HIJOS REBELDES DE CHAVEZ", "LOS MESONES UNIDOS CON CHAVEZ",
-        "LUISA CACERES DE ARISMENDI", "MI GRAN BARCELONA", "PARQUE VIDOÑO", "POR EL LEGADO DEL COMANDANTE CHAVEZ", "POTOTUCUAL",
-        "PRODUCTIVA LA LUCHA DE UN PUEBLO UNIDO", "PRODUCTIVA VENCEDORES DE LA PATRIA", "SIMON BOLIVAR NARICUAL", "SOCIO PRODUCTIVA SIMON BOLIVAR",
-        "SOCIALISTA BAHIA DE BARCELONA SIMON BOLIVAR", "SOCIALISTA EL VIÑEDO", "SOCIALISTA INDIGENA EL PILAR DE LOS CUMANAGOTOS",
-        "SOCIALISTA LA VICTORIA PERFECTA 29 DE MARZO", "SOCIALISTA MAYORQUIN III", "SOCIALISTA TRIUNFADORES INDIGENAS CUMANAGOTOS",
-        "SOCIALISTA VALLES DEL NEVERI", "SOCIOPRODUCTIVA BICENTENARIO DE LA INDEPENDENCIA", "VENCEDORES INDIGENAS CUMANAGOTO"
-    ];
+    const listaComunas = ["4F-92 COMANDANTE ETERNO HUGO RAFAEL CHAVEZ", "AGROINDUSTRIAL CACIQUE GUAICAIPURO", "AGROECOLOGICA Y TURISTICA BERGANTIN", "AGROTURISTICA Y SOCIALISTA LA FE DE TODOS", "ANTONIO RICAURTE 4F", "DESPERTAR CUMANAGOTO", "DONATO CONSTANTINO MARADEI", "ECO AMBIENTAL EL GRAN EL SAMAN DORADO", "EZEQUIEL ZAMORA", "FRANCISCO DE MIRANDA DE CRUZ VERDE", "GOLPE DE TIMON", "GRUTA SAN FELIPE NERI", "GUERREROS DE BOYACA", "HUGO CHAVEZ FRIAS 2013", "INDIGENA CUMANAGOTO SAN BERNARDINO", "INDIGENA GRAN CACIQUE CAYAURIMA", "INDIOS CUMANAGOTOS", "JOSE ANTONIO ANZOATEGUI 14-15", "JUANA PETRONILA HERNANDEZ", "LAS ORQUIDEAS DE CHAVEZ", "LINA RON", "LOS ESFUERZOS EN VICTORIA", "LOS HIJOS REBELDES DE CHAVEZ", "LOS MESONES UNIDOS CON CHAVEZ", "LUISA CACERES DE ARISMENDI", "MI GRAN BARCELONA", "PARQUE VIDOÑO", "POR EL LEGADO DEL COMANDANTE CHAVEZ", "POTOTUCUAL", "PRODUCTIVA LA LUCHA DE UN PUEBLO UNIDO", "PRODUCTIVA VENCEDORES DE LA PATRIA", "SIMON BOLIVAR NARICUAL", "SOCIO PRODUCTIVA SIMON BOLIVAR", "SOCIALISTA BAHIA DE BARCELONA SIMON BOLIVAR", "SOCIALISTA EL VIÑEDO", "SOCIALISTA INDIGENA EL PILAR DE LOS CUMANAGOTOS", "SOCIALISTA LA VICTORIA PERFECTA 29 DE MARZO", "SOCIALISTA MAYORQUIN III", "SOCIALISTA TRIUNFADORES INDIGENAS CUMANAGOTOS", "SOCIALISTA VALLES DEL NEVERI", "SOCIOPRODUCTIVA BICENTENARIO DE LA INDEPENDENCIA", "VENCEDORES INDIGENAS CUMANAGOTO"];
 
-    // Inicializar contadores si están vacíos
-    listaComunas.forEach(c => { if(!dbMapasCount[c]) dbMapasCount[c] = 0; });
+    var contadores = { vuln_emb:0, vuln_disc:0, inund:0, casa_r:0, basura:0 }; // Añade aquí todos tus IDs
 
-    // --- LÓGICA DE REGISTRO Y LOGIN ---
+    // Llenar selects
+    const sc = document.getElementById('selectComuna');
+    listaComunas.forEach(c => {
+        let opt = new Option(c, c);
+        sc.add(opt);
+        if(!dbMapasCount[c]) dbMapasCount[c] = 0;
+    });
+
+    /* --- FUNCIONES DE ACCESO --- */
     function verificarCorreo() {
-        const correo = document.getElementById('regCor').value.toLowerCase().trim();
-        if(!correo) return alert("Ingrese un correo");
-        
-        const campos = document.getElementById('campos-dinamicos-registro');
-        campos.style.display = 'flex';
-
-        const usuario = dbVoceros.find(v => v.cor === correo);
-        if(usuario) {
-            document.getElementById('regNom').value = usuario.nom;
-            document.getElementById('regApe').value = usuario.ape;
-            document.getElementById('regCed').value = usuario.ced;
-            document.getElementById('regTel').value = usuario.tel;
-            document.getElementById('regCom').value = usuario.com;
-            document.getElementById('regSec').value = usuario.sec;
-            document.getElementById('btnIngresar').innerText = "BIENVENIDO - INGRESAR";
-        } else {
-            limpiarCampos();
-            document.getElementById('btnIngresar').innerText = "REGISTRAR Y ENTRAR";
+        const correo = document.getElementById('regCor').value.trim().toLowerCase();
+        if(!correo) return;
+        document.getElementById('campos-dinamicos-registro').style.display = 'flex';
+        const v = dbVoceros.find(u => u.cor === correo);
+        if(v) {
+            document.getElementById('regNom').value = v.nom;
+            document.getElementById('regApe').value = v.ape;
+            document.getElementById('regCed').value = v.ced;
+            document.getElementById('regTel').value = v.tel;
+            document.getElementById('regCom').value = v.com;
+            document.getElementById('regSec').value = v.sec;
         }
     }
 
     function registrarVocero() {
-        const correo = document.getElementById('regCor').value.toLowerCase().trim();
         const vocero = {
             nom: document.getElementById('regNom').value,
             ape: document.getElementById('regApe').value,
             ced: document.getElementById('regCed').value,
             tel: document.getElementById('regTel').value,
-            cor: correo,
+            cor: document.getElementById('regCor').value.toLowerCase(),
             com: document.getElementById('regCom').value,
-            sec: document.getElementById('regSec').value,
-            voceria: document.getElementById('selectVoceria').value
+            sec: document.getElementById('regSec').value
         };
-
-        const index = dbVoceros.findIndex(v => v.cor === correo);
-        if(index !== -1) dbVoceros[index] = vocero;
-        else dbVoceros.push(vocero);
-
+        const index = dbVoceros.findIndex(u => u.cor === vocero.cor);
+        if(index !== -1) dbVoceros[index] = vocero; else dbVoceros.push(vocero);
         localStorage.setItem('SIG_Voceros', JSON.stringify(dbVoceros));
         reproducirAnimacion('usuario');
     }
@@ -328,9 +347,9 @@
         const u = document.getElementById('adminEmail').value;
         const p = document.getElementById('adminPass').value;
         if((u === "yetzonmora@gmail.com" && p === "32568263") || (u === "andreinacastro040789@gmail.com" && p === "andreina123")) {
-            rolUsuario = "admin";
+            rolActual = "admin";
             reproducirAnimacion('admin');
-        } else alert("Acceso Denegado");
+        } else alert("Acceso Incorrecto");
     }
 
     function reproducirAnimacion(rol) {
@@ -341,39 +360,73 @@
             document.getElementById('video-contenedor').style.display = 'none';
             document.getElementById('pantalla-registro').style.display = 'none';
             document.getElementById('sistema-principal').style.display = 'flex';
-            if(rol === 'admin') mostrarPanelAdmin();
-            else document.getElementById('comunaActiva').value = document.getElementById('regCom').value;
+            if(rol === 'admin') mostrarLeyendaAdmin();
             inicializarMapa();
         };
     }
 
-    // --- PANEL ADMINISTRATIVO ---
-    function mostrarPanelAdmin() {
+    /* --- MAPA CORE --- */
+    function inicializarMapa() {
+        if(map) return;
+        map = L.map('map', { editable: true }).setView([10.136, -64.686], 18);
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}').addTo(map);
+
+        map.on('editable:drawing:start', e => { trazandoAhora = e.layer; document.getElementById('btnFinalizar').style.display = 'flex'; });
+        map.on('editable:drawing:end', e => { registrarObjeto(e.layer); activarMano(); document.getElementById('btnFinalizar').style.display = 'none'; });
+        map.on('click', e => { if (emojiActual && !modoNavegar) crearIcono(e.latlng); });
+    }
+
+    function crearIcono(latlng) {
+        let html = `<div class="map-icon-container">${emojiActual}</div>`;
+        let m = L.marker(latlng, { icon: L.divIcon({ html: html, className:'' }), draggable: true }).addTo(map);
+        m.tipoId = emojiActual; // Simplificado para el ejemplo
+        m.bindPopup(`<button onclick="map.removeLayer(this._source)">ELIMINAR</button>`);
+        stackElementos.push(m);
+    }
+
+    function registrarObjeto(obj) {
+        let col = document.getElementById('colorPol').value;
+        obj.setStyle({ color: col, fillColor: col, fillOpacity: document.getElementById('checkRelleno').checked ? 0.4 : 0 });
+        obj.bindPopup(`<button onclick="map.removeLayer(this._source)">ELIMINAR</button>`);
+        stackElementos.push(obj);
+    }
+
+    function iniciarTrazado(t) { if(t==='pol') map.editTools.startPolygon(); else map.editTools.startPolyline(); }
+    function finalizarTrazado() { if(trazandoAhora) map.editTools.stopDrawing(); }
+    function activarMano() { emojiActual = null; modoNavegar = true; document.getElementById('floatMano').classList.add('activo-float'); }
+    function cambiarEmoji(e, btn, id) { emojiActual = e; modoNavegar = false; document.getElementById('floatMano').classList.remove('activo-float'); }
+    function deshacer() { let el = stackElementos.pop(); if(el) { stackRedo.push(el); map.removeLayer(el); } }
+
+    /* --- ADMIN --- */
+    function mostrarLeyendaAdmin() {
         document.getElementById('sidebar').style.display = 'none';
         document.getElementById('panel-admin-comunas').style.display = 'block';
         const lista = document.getElementById('lista-comunas-admin');
         lista.innerHTML = "";
-
-        listaComunas.forEach(comuna => {
-            const div = document.createElement('div');
-            div.className = 'item-comuna-admin';
-            div.onclick = () => entrarAComunaAdmin(comuna);
-            div.innerHTML = `<span>${comuna}</span> <span class="badge-mapas">${dbMapasCount[comuna]}</span>`;
-            lista.appendChild(div);
+        listaComunas.forEach(c => {
+            lista.innerHTML += `<div class="item-comuna-admin" onclick="entrarComuna('${c}')"><span>${c}</span><span class="badge-mapas">${dbMapasCount[c]}</span></div>`;
         });
         actualizarTablaVoceros();
     }
 
-    function entrarAComunaAdmin(comuna) {
+    function entrarComuna(c) {
         document.getElementById('panel-admin-comunas').style.display = 'none';
         document.getElementById('sidebar').style.display = 'block';
         document.getElementById('btnVolverAdmin').style.display = 'block';
-        document.getElementById('comunaActiva').value = comuna;
+        document.getElementById('selectComuna').value = c;
     }
 
-    function volverAPanelAdmin() {
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('panel-admin-comunas').style.display = 'block';
+    function guardarMapa() {
+        const c = document.getElementById('selectComuna').value;
+        if(!c) return alert("Seleccione Comuna");
+        dbMapasCount[c]++;
+        localStorage.setItem('SIG_Mapas_Count', JSON.stringify(dbMapasCount));
+        alert("Mapa guardado exitosamente");
+    }
+
+    function actualizarTablaVoceros() {
+        const tbody = document.getElementById('tbody-voceros');
+        tbody.innerHTML = dbVoceros.map(v => `<tr><td>${v.nom}</td><td>${v.ced}</td><td>${v.tel}</td><td>${v.cor}</td><td>${v.com}</td></tr>`).join('');
     }
 
     function togglePanelVoceros() {
@@ -381,44 +434,12 @@
         p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    function actualizarTablaVoceros() {
-        const tbody = document.getElementById('tbody-voceros');
-        tbody.innerHTML = "";
-        dbVoceros.forEach(v => {
-            tbody.innerHTML += `<tr><td>${v.nom} ${v.ape}</td><td>${v.ced}</td><td>${v.tel}</td><td>${v.cor}</td><td>${v.com}</td><td>${v.voceria}</td></tr>`;
-        });
+    function agregarFilaHistoria() {
+        let div = document.createElement('div');
+        div.className = 'fila-historia';
+        div.innerHTML = `<input type="text" class="col-anio sidebar-input" placeholder="Año"><input type="text" class="sidebar-input" placeholder="Hito"><button class="btn-del-hist" onclick="this.parentElement.remove()">🗑️</button>`;
+        document.getElementById('lista-antecedentes').appendChild(div);
     }
-
-    function guardarMapaActual() {
-        const c = document.getElementById('comunaActiva').value;
-        if(!c) return alert("No hay comuna seleccionada");
-        dbMapasCount[c]++;
-        localStorage.setItem('SIG_Mapas_Count', JSON.stringify(dbMapasCount));
-        alert("Mapa guardado en la memoria de la comuna: " + c);
-        if(rolUsuario === 'admin') mostrarPanelAdmin();
-    }
-
-    // --- MAPA ---
-    function inicializarMapa() {
-        if(map) return;
-        map = L.map('map').setView([10.136, -64.686], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    }
-
-    function activarEmoji(e, id) {
-        alert("Marcador " + e + " activado para colocar en el mapa.");
-    }
-
-    function cambiarSeccion(tipo) {
-        document.getElementById('form-registro-principal').style.display = (tipo === 'registro') ? 'grid' : 'none';
-        document.getElementById('form-admin-acceso').style.display = (tipo === 'admin') ? 'grid' : 'none';
-        document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (tipo==='registro'&&i===0)||(tipo==='admin'&&i===1)));
-    }
-
-    function controlarOtro(v) { document.getElementById('segmento-otro').style.display = (v === 'otro') ? 'block' : 'none'; }
-    function limpiarCampos() { document.querySelectorAll('#campos-dinamicos-registro input').forEach(i => i.value = ""); }
-    function limpiarSiVacio(v) { if(!v) document.getElementById('campos-dinamicos-registro').style.display = 'none'; }
 </script>
-
 </body>
 </html>
