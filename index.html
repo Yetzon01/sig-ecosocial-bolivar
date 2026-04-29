@@ -54,6 +54,7 @@
         .form-row { display: flex; gap: 15px; }
         .form-group { flex: 1; }
         
+        /* Contenedor de datos que se oculta/muestra según el correo */
         #campos-dinamicos-registro { display: none; flex-direction: column; gap: 15px; }
 
         label { font-size: 11px; color: var(--v-lime); text-transform: uppercase; font-weight: 800; margin-bottom: 5px; display: block; }
@@ -441,11 +442,12 @@
 <script src="https://npmcdn.com/leaflet-editable@1.2.0/src/Leaflet.Editable.js"></script>
 
 <script>
-    /* --- MEMORIA Y BASE DE DATOS --- */
-    let dbVoceros = JSON.parse(localStorage.getItem('dbVoceros')) || [];
-    let dbMapasCount = JSON.parse(localStorage.getItem('dbMapasCount')) || {};
+    /* --- BASE DE DATOS LOCAL (SIMULADA) --- */
+    let dbVoceros = [];
+    let dbMapasCount = {};
     let rolActual = "usuario";
 
+    /* --- ADMINISTRADORES AUTORIZADOS --- */
     const adminPermitidos = [
         { user: "yetzonmora@gmail.com", pass: "32568263" },
         { user: "andreinacastro040789@gmail.com", pass: "andreina123" }
@@ -465,24 +467,31 @@
         "SOCIALISTA VALLES DEL NEVERI", "SOCIOPRODUCTIVA BICENTENARIO DE LA INDEPENDENCIA", "VENCEDORES INDIGENAS CUMANAGOTO"
     ];
 
-    // Inicializar o cargar contadores de la memoria
-    listaComunas.forEach(c => { if(dbMapasCount[c] === undefined) dbMapasCount[c] = 0; });
+    // Inicializar contadores de mapas
+    listaComunas.forEach(c => dbMapasCount[c] = 0);
 
-    /* --- LÓGICA DE REGISTRO --- */
+    /* --- LÓGICA DE VERIFICACIÓN DE CORREO --- */
     function verificarCorreo() {
         const correo = document.getElementById('regCor').value.trim().toLowerCase();
         if(!correo) { alert("Por favor ingrese un correo."); return; }
-        document.getElementById('campos-dinamicos-registro').style.display = 'flex';
-        const vocero = dbVoceros.find(v => v.cor.toLowerCase() === correo);
-        if(vocero) {
-            document.getElementById('regNom').value = vocero.nom;
-            document.getElementById('regApe').value = vocero.ape;
-            document.getElementById('regCed').value = vocero.ced;
-            document.getElementById('regTel').value = vocero.tel;
-            document.getElementById('regCom').value = vocero.com;
-            document.getElementById('regSec').value = vocero.sec;
-            alert("Usuario reconocido.");
+
+        const contenedorCampos = document.getElementById('campos-dinamicos-registro');
+        contenedorCampos.style.display = 'flex';
+
+        // Buscar si ya existe en la "base de datos"
+        const voceroExistente = dbVoceros.find(v => v.cor.toLowerCase() === correo);
+
+        if(voceroExistente) {
+            // Auto-llenar campos
+            document.getElementById('regNom').value = voceroExistente.nom;
+            document.getElementById('regApe').value = voceroExistente.ape;
+            document.getElementById('regCed').value = voceroExistente.ced;
+            document.getElementById('regTel').value = voceroExistente.tel;
+            document.getElementById('regCom').value = voceroExistente.com;
+            document.getElementById('regSec').value = voceroExistente.sec;
+            alert("Usuario reconocido. Los datos se han cargado automáticamente.");
         } else {
+            // Limpiar campos para nuevo registro
             limpiarCamposRegistro();
         }
     }
@@ -496,20 +505,32 @@
         document.getElementById('regSec').value = "";
     }
 
+    function limpiarSiVacio(val) {
+        if(val === "") {
+            document.getElementById('campos-dinamicos-registro').style.display = 'none';
+        }
+    }
+
     function registrarVocero() {
+        const correo = document.getElementById('regCor').value;
+        const indexExistente = dbVoceros.findIndex(v => v.cor.toLowerCase() === correo.toLowerCase());
+
         const vocero = {
             nom: document.getElementById('regNom').value,
             ape: document.getElementById('regApe').value,
             ced: document.getElementById('regCed').value,
             tel: document.getElementById('regTel').value,
-            cor: document.getElementById('regCor').value,
+            cor: correo,
             com: document.getElementById('regCom').value,
             sec: document.getElementById('regSec').value
         };
-        const index = dbVoceros.findIndex(v => v.cor === vocero.cor);
-        if(index !== -1) dbVoceros[index] = vocero; else dbVoceros.push(vocero);
-        
-        localStorage.setItem('dbVoceros', JSON.stringify(dbVoceros));
+
+        if(indexExistente !== -1) {
+            dbVoceros[indexExistente] = vocero; // Actualizar
+        } else {
+            dbVoceros.push(vocero); // Nuevo
+        }
+
         actualizarTablaVoceros();
         reproducirAnimacion('usuario');
     }
@@ -530,56 +551,75 @@
     }
 
     function validarAdmin() {
-        const email = document.getElementById('adminEmail').value.trim().toLowerCase();
-        const pass = document.getElementById('adminPass').value;
-        if (adminPermitidos.find(a => a.user === email && a.pass === pass)) {
+        const emailIngresado = document.getElementById('adminEmail').value.trim().toLowerCase();
+        const passIngresada = document.getElementById('adminPass').value;
+        const esValido = adminPermitidos.find(acc => acc.user === emailIngresado && acc.pass === passIngresada);
+        if (esValido) {
             rolActual = "admin";
             reproducirAnimacion('admin');
-        } else alert("Acceso Denegado.");
-    }
-
-    function cambiarSeccion(tipo) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        if(tipo === 'registro') {
-            document.getElementById('form-registro-principal').style.display = 'grid';
-            document.getElementById('form-admin-acceso').style.display = 'none';
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
         } else {
-            document.getElementById('form-registro-principal').style.display = 'none';
-            document.getElementById('form-admin-acceso').style.display = 'grid';
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            alert("Acceso Denegado: Usuario o contraseña incorrectos.");
         }
     }
 
+    function cambiarSeccion(tipo) {
+        const fRegistro = document.getElementById('form-registro-principal');
+        const fAdmin = document.getElementById('form-admin-acceso');
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach(btn => btn.classList.remove('active'));
+        if(tipo === 'registro') {
+            fRegistro.style.display = 'grid'; fAdmin.style.display = 'none';
+            btns[0].classList.add('active');
+        } else {
+            fRegistro.style.display = 'none'; fAdmin.style.display = 'grid';
+            btns[1].classList.add('active');
+        }
+    }
+
+    function controlarOtro(valor) {
+        const campoOtro = document.getElementById('segmento-otro');
+        if (valor === 'otro') campoOtro.style.display = 'block';
+        else campoOtro.style.display = 'none';
+    }
+
     function reproducirAnimacion(rol) {
+        const videoContenedor = document.getElementById('video-contenedor');
         const video = document.getElementById('animacion-video');
-        document.getElementById('video-contenedor').style.display = 'flex';
+        const registro = document.getElementById('pantalla-registro');
+        const sistema = document.getElementById('sistema-principal');
+
+        videoContenedor.style.display = 'flex';
         video.play();
-        video.onended = () => {
-            document.getElementById('video-contenedor').style.display = 'none';
-            document.getElementById('pantalla-registro').style.display = 'none';
-            document.getElementById('sistema-principal').style.display = 'flex';
-            if(rol === 'admin') mostrarLeyendaAdmin();
-            else {
-                document.getElementById('sidebar').style.display = 'block';
-                document.getElementById('panel-admin-comunas').style.display = 'none';
-            }
-            inicializarMapa();
-            actualizarTablaVoceros();
+
+        video.onended = function() {
+            videoContenedor.style.opacity = '0';
+            videoContenedor.style.transition = 'opacity 0.6s';
+            setTimeout(() => {
+                videoContenedor.style.display = 'none';
+                registro.style.display = 'none';
+                sistema.style.display = 'flex';
+                
+                if(rol === 'admin') mostrarLeyendaAdmin();
+                else {
+                    document.getElementById('sidebar').style.display = 'block';
+                    document.getElementById('panel-admin-comunas').style.display = 'none';
+                }
+                inicializarMapa();
+            }, 600);
         };
     }
 
-    /* --- PANEL ADMINISTRATIVO DE COMUNAS --- */
     function mostrarLeyendaAdmin() {
         document.getElementById('sidebar').style.display = 'none';
         document.getElementById('panel-admin-comunas').style.display = 'block';
         const listaDiv = document.getElementById('lista-comunas-admin');
         listaDiv.innerHTML = "";
-        listaComunas.forEach(c => {
+
+        listaComunas.forEach(comuna => {
             const div = document.createElement('div');
             div.className = 'item-comuna-admin';
-            div.onclick = () => entrarAComunaAdmin(c);
-            div.innerHTML = `<span class="comuna-nombre">${c}</span> <span class="badge-mapas">${dbMapasCount[c]}</span>`;
+            div.onclick = () => entrarAComunaAdmin(comuna);
+            div.innerHTML = `<span class="comuna-nombre">${comuna}</span> <span class="badge-mapas">${dbMapasCount[comuna]}</span>`;
             listaDiv.appendChild(div);
         });
     }
@@ -592,17 +632,20 @@
     }
 
     function publicarMapaAdmin() {
-        const com = document.getElementById('selectComuna').value;
-        if(!com) { alert("Seleccione una Comuna."); return; }
-        dbMapasCount[com]++;
-        localStorage.setItem('dbMapasCount', JSON.stringify(dbMapasCount));
-        alert("Mapa guardado en el historial.");
+        const comuna = document.getElementById('selectComuna').value;
+        if(!comuna) { alert("Debe seleccionar una Comuna."); return; }
+        dbMapasCount[comuna]++;
+        alert("¡Información guardada exitosamente en el historial!");
         if(rolActual === 'admin') mostrarLeyendaAdmin();
     }
 
-    /* --- LÓGICA DEL MAPA (LEAFLET) --- */
+    /* MAPA - FUNCIONES CORE */
     var map, emojiActual = null, modoEspecial = "", modoNavegar = true;
-    var stackElementos = [], trazandoAhora = null;
+    var stackElementos = [], stackRedo = [];
+    var objetoSeleccionado = null;
+    var trazandoAhora = null;
+    var markerUbicacion = null;
+
     var contadores = { 
         centro_med:0, cpt1:0, cpt2:0, cpt3:0, pol_inst:0, bom_inst:0, pc_inst:0, cuadrante:0,
         medico:0, enfermero:0, paramedico:0, pol_amb:0, inparques:0, mov_amb:0,
@@ -614,51 +657,116 @@
 
     function inicializarMapa() {
         if (map) return;
-        map = L.map('map', { editable: true }).setView([10.136, -64.686], 18);
+        map = L.map('map', { editable: true, zoomControl: true }).setView([10.136, -64.686], 18);
         L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 20 }).addTo(map);
         
-        map.on('editable:drawing:start', e => { trazandoAhora = e.layer; document.getElementById('btnFinalizar').style.display = 'flex'; });
-        map.on('editable:drawing:end', e => { registrarObjeto(e.layer); document.getElementById('btnFinalizar').style.display = 'none'; activarMano(); });
-        map.on('click', e => { if (emojiActual && !modoNavegar) crearIcono(e.latlng); });
+        map.on('zoomend', function() {
+            let z = map.getZoom();
+            document.getElementById('zoomSlider').value = z;
+            document.getElementById('zoomInput').value = Math.round((z / 18) * 100);
+        });
+
+        map.on('editable:drawing:start', e => {
+            trazandoAhora = e.layer;
+            document.getElementById('btnFinalizar').style.display = 'flex';
+        });
+
+        map.on('editable:drawing:end', e => {
+            registrarObjeto(e.layer);
+            activarMano();
+            document.getElementById('btnFinalizar').style.display = 'none';
+            trazandoAhora = null;
+        });
+        
+        map.on('click', e => {
+            if (emojiActual && !modoNavegar) crearIcono(e.latlng);
+            else deseleccionarTodo();
+        });
     }
 
-    function iniciarTrazado(tipo) { if(tipo === 'pol') map.editTools.startPolygon(); else map.editTools.startPolyline(); }
+    function irAMiUbicacion() {
+        if (!navigator.geolocation) { alert("GPS no disponible."); return; }
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var lat = pos.coords.latitude; var lon = pos.coords.longitude;
+            map.setView([lat, lon], 19);
+            if (markerUbicacion) map.removeLayer(markerUbicacion);
+            markerUbicacion = L.circleMarker([lat, lon], { radius: 8, fillColor: "#2196F3", color: "white", weight: 2, opacity: 1, fillOpacity: 0.8 }).addTo(map).bindPopup("Ubicación Actual").openPopup();
+        });
+    }
+
+    function iniciarTrazado(tipo) {
+        deseleccionarTodo();
+        if(tipo === 'pol') map.editTools.startPolygon();
+        else map.editTools.startPolyline();
+    }
+
     function finalizarTrazado() { if(trazandoAhora) map.editTools.stopDrawing(); }
+    function controlarZoomSlider(val) { map.setZoom(parseFloat(val)); }
+    function controlarZoomManual(porcentaje) {
+        let p = parseFloat(porcentaje);
+        let nuevoZoom = (p / 100) * 18;
+        map.setZoom(nuevoZoom);
+    }
+
+    function agregarFilaHistoria() {
+        let div = document.createElement('div');
+        div.className = 'fila-historia';
+        div.innerHTML = `<input type="text" class="col-anio sidebar-input" placeholder="Año"><input type="text" class="col-suceso sidebar-input" placeholder="Hito"><button class="btn-del-hist" onclick="this.parentElement.remove()">🗑️</button>`;
+        document.getElementById('lista-antecedentes').appendChild(div);
+    }
 
     function crearIcono(latlng) {
-        let html = `<div class="map-icon-container">${emojiActual === 'CRUZ_ROJA' ? '<div class="cruz-roja"></div>' : emojiActual}</div>`;
-        let m = L.marker(latlng, { icon: L.divIcon({ className:'', html: html, iconSize:[24,24] }), draggable: true }).addTo(map);
-        m.tipoId = modoEspecial; contadores[modoEspecial]++; actualizarBadges();
-        m.bindPopup(`<button class="btn-delete-popup" onclick="eliminarObjeto(this)">ELIMINAR</button>`);
+        let s = 24; 
+        let contenidoIcono = (emojiActual === 'CRUZ_ROJA') ? `<div class="cruz-roja"></div>` : emojiActual;
+        let html = `<div class="map-icon-container">${contenidoIcono}</div>`;
+        let m = L.marker(latlng, { icon: L.divIcon({ className:'', html: html, iconSize:[s,s], iconAnchor:[s/2, s/2] }), draggable: true }).addTo(map);
+        m.tipoId = modoEspecial;
+        contadores[modoEspecial]++; actualizarBadges();
+        m.bindPopup(`<button class="btn-delete-popup" onclick="eliminarObjeto(objetoSeleccionado)">ELIMINAR</button>`);
+        m.on('click', ev => { L.DomEvent.stopPropagation(ev); deseleccionarTodo(); objetoSeleccionado = m; m.openPopup(); });
         stackElementos.push(m);
     }
 
     function registrarObjeto(obj) {
-        let desc = prompt("Descripción:", "");
-        obj.setStyle({ color: document.getElementById('colorPol').value, fillOpacity: 0.4 });
-        obj.bindPopup(`<b>${desc || 'Trazado'}</b><br><button class="btn-delete-popup" onclick="eliminarObjeto(this)">ELIMINAR</button>`);
+        let col = document.getElementById('colorPol').value;
+        let fill = document.getElementById('checkRelleno').checked;
+        let descripcion = prompt("Descripción del riesgo/trazado:", "");
+        obj.setStyle({ color: col, fillColor: col, fillOpacity: fill ? 0.4 : 0, weight: 4 });
+        obj.bindPopup(`<div><span class="popup-desc">${descripcion || "Trazado"}</span><button class="btn-delete-popup" onclick="eliminarObjeto(objetoSeleccionado)">ELIMINAR</button></div>`);
+        obj.on('mousedown', e => { L.DomEvent.stopPropagation(e); deseleccionarTodo(); objetoSeleccionado = obj; obj.enableEdit(); obj.openPopup(); });
         stackElementos.push(obj);
     }
 
-    function eliminarObjeto(btn) {
-        // Encontrar el objeto que contiene este popup
-        stackElementos.forEach((el, index) => {
-            if(el.getPopup().getContent().includes(btn.outerHTML) || el._popup._content.includes(btn.outerHTML)) {
-                if(el.tipoId) { contadores[el.tipoId]--; actualizarBadges(); }
-                map.removeLayer(el);
-                stackElementos.splice(index, 1);
-            }
-        });
+    function eliminarObjeto(obj) {
+        if (!obj) return;
+        if (obj.tipoId) { contadores[obj.tipoId]--; actualizarBadges(); }
+        map.removeLayer(obj);
+        stackElementos = stackElementos.filter(i => i !== obj);
+        objetoSeleccionado = null;
     }
 
-    function activarMano() { emojiActual = null; modoNavegar = true; document.querySelectorAll('.btn-mapa').forEach(b => b.classList.remove('active')); document.getElementById('floatMano').classList.add('activo-float'); }
-    function cambiarEmoji(e, btn, esp) { emojiActual = e; modoEspecial = esp; modoNavegar = false; document.querySelectorAll('.btn-mapa').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.getElementById('floatMano').classList.remove('activo-float'); }
+    function deseleccionarTodo() {
+        if (objetoSeleccionado) { if (objetoSeleccionado.disableEdit) objetoSeleccionado.disableEdit(); objetoSeleccionado.closePopup(); }
+        objetoSeleccionado = null;
+    }
+
+    function activarMano() { 
+        emojiActual = null; modoNavegar = true; 
+        document.querySelectorAll('.btn-mapa').forEach(b => b.classList.remove('active')); 
+        document.getElementById('floatMano').classList.add('activo-float'); 
+    }
+
+    function cambiarEmoji(e, btn, esp) { 
+        emojiActual = e; modoEspecial = esp; modoNavegar = false; 
+        document.querySelectorAll('.btn-mapa').forEach(b => b.classList.remove('active')); 
+        btn.classList.add('activo'); 
+        document.getElementById('floatMano').classList.remove('activo-float'); 
+    }
+
     function actualizarBadges() { for(let k in contadores) { let el = document.getElementById('count-'+k); if(el) el.innerText = contadores[k]; } }
-    function agregarFilaHistoria() { let div = document.createElement('div'); div.className = 'fila-historia'; div.innerHTML = `<input type="text" class="col-anio sidebar-input" placeholder="Año"><input type="text" class="col-suceso sidebar-input" placeholder="Hito"><button class="btn-del-hist" onclick="this.parentElement.remove()">🗑️</button>`; document.getElementById('lista-antecedentes').appendChild(div); }
-    function controlarZoomSlider(val) { map.setZoom(val); }
-    function irAMiUbicacion() { navigator.geolocation.getCurrentPosition(p => map.setView([p.coords.latitude, p.coords.longitude], 19)); }
-    function limpiarSiVacio(v) { if(!v) document.getElementById('campos-dinamicos-registro').style.display='none'; }
-    function controlarOtro(v) { document.getElementById('segmento-otro').style.display = v==='otro'?'block':'none'; }
+    function deshacer() { let el = stackElementos.pop(); if(el) { stackRedo.push(el); map.removeLayer(el); } }
+    function rehacer() { let el = stackRedo.pop(); if(el) { stackElementos.push(el); el.addTo(map); } }
 </script>
+
 </body>
 </html>
